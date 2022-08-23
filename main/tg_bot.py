@@ -32,7 +32,7 @@ LESSONS_TIME = [(datetime.time(8, 30), datetime.time(10, 5)),
                 (datetime.time(14, 35), datetime.time(16, 10)),
                 (datetime.time(16, 30), datetime.time(18, 5)),
                 (datetime.time(18, 25), datetime.time(20, 00)),
-                (datetime.time(20, 20), datetime.time(21, 55)),]
+                (datetime.time(20, 20), datetime.time(21, 55))]
 #LESSONS_TIME = ['8:30 - 10:05', '10:35 - 12:00', '12:40 - 14:15', '14:35 - 16:10', '16:30 - 18:05', '18:25 - 20:00', '20:20 - 21:55']
 WEEKDAY_NAMES = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
 REGION = 'Asia/Tomsk'
