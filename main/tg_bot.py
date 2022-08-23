@@ -15,15 +15,15 @@ import logging
 class CommandMessages:
     def __new__(cls): pass
 
-    NEXT_LESSON_MESSAGE = '⬇️Следующая пара'
-    CURRENT_DAY_MESSAGE = '⏺Расписание на этот день'
-    NEXT_DAY_MESSAGE = '➡️Расписание на следующий день'
-    CURRENT_WEEK_MESSAGE = '📅Текущая неделя'
-    NEXT_WEEK_MESSAGE = '📆Следующая неделя'
-    CHANGE_GROUP_MESSAGE = '⚙️Изменить группу'
-    SET_GROUP_MESSAGE = '⚙️Установить группу'
-    BACK_TO_MENU_MESSAGE = 'Выйти в основное меню'
-    DATE_TIMETABLE_MESSAGE = '📅Расписание по дате'
+    NEXT_LESSON = '⬇️Следующая пара'
+    CURRENT_DAY = '⏺Расписание на этот день'
+    NEXT_DAY = '➡️Расписание на следующий день'
+    CURRENT_WEEK = '📅Текущая неделя'
+    NEXT_WEEK = '📆Следующая неделя'
+    CHANGE_GROUP = '⚙️Изменить группу'
+    SET_GROUP = '⚙️Установить группу'
+    BACK_TO_MENU = 'Выйти в основное меню'
+    DATE_TIMETABLE = '📅Расписание по дате'
 
 
 LESSONS_TIME = [(datetime.time(8, 30), datetime.time(10, 5)),
@@ -33,7 +33,6 @@ LESSONS_TIME = [(datetime.time(8, 30), datetime.time(10, 5)),
                 (datetime.time(16, 30), datetime.time(18, 5)),
                 (datetime.time(18, 25), datetime.time(20, 00)),
                 (datetime.time(20, 20), datetime.time(21, 55))]
-#LESSONS_TIME = ['8:30 - 10:05', '10:35 - 12:00', '12:40 - 14:15', '14:35 - 16:10', '16:30 - 18:05', '18:25 - 20:00', '20:20 - 21:55']
 WEEKDAY_NAMES = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
 REGION = 'Asia/Tomsk'
 
@@ -101,16 +100,16 @@ if __name__ == '__main__':
     def start_menu(user_id):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
         if get_user_group_id(user_id):
-            next_lesson = types.KeyboardButton(CommandMessages.NEXT_LESSON_MESSAGE)
-            current_day = types.KeyboardButton(CommandMessages.CURRENT_DAY_MESSAGE)
-            next_day = types.KeyboardButton(CommandMessages.NEXT_DAY_MESSAGE)
-            date_day = types.KeyboardButton(CommandMessages.DATE_TIMETABLE_MESSAGE)
-            current_week = types.KeyboardButton(CommandMessages.CURRENT_WEEK_MESSAGE)
-            next_week = types.KeyboardButton(CommandMessages.NEXT_WEEK_MESSAGE)
-            change_group = types.KeyboardButton(CommandMessages.SET_GROUP_MESSAGE)
+            next_lesson = types.KeyboardButton(CommandMessages.NEXT_LESSON)
+            current_day = types.KeyboardButton(CommandMessages.CURRENT_DAY)
+            next_day = types.KeyboardButton(CommandMessages.NEXT_DAY)
+            date_day = types.KeyboardButton(CommandMessages.DATE_TIMETABLE)
+            current_week = types.KeyboardButton(CommandMessages.CURRENT_WEEK)
+            next_week = types.KeyboardButton(CommandMessages.NEXT_WEEK)
+            change_group = types.KeyboardButton(CommandMessages.SET_GROUP)
             markup.add(next_lesson, current_day, next_day, date_day, current_week, next_week, change_group)
         else:
-            set_group = types.KeyboardButton(CommandMessages.SET_GROUP_MESSAGE)
+            set_group = types.KeyboardButton(CommandMessages.SET_GROUP)
             markup.add(set_group)
         return markup
 
@@ -134,54 +133,54 @@ if __name__ == '__main__':
             return
 
         match message.text:
-            case CommandMessages.CHANGE_GROUP_MESSAGE | CommandMessages.SET_GROUP_MESSAGE:
+            case CommandMessages.CHANGE_GROUP | CommandMessages.SET_GROUP:
                 users_statements[user_id] = 'changing_group'
                 caption = 'Введите id своей группы. Чтобы его узнать, зайдите на сайт с расписанием и откройте расписание для своей группы на любую неделю. Цифры, подчеркнутые на скриншоте, в url страницы будут являться id вашей группы. Это нужно сделать единожды.'
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-                button = types.KeyboardButton(CommandMessages.BACK_TO_MENU_MESSAGE)
+                button = types.KeyboardButton(CommandMessages.BACK_TO_MENU)
                 markup.add(button)
                 with open('group_id.png', 'rb') as photo:
                     await bot.send_photo(user_id, photo, caption=caption, reply_markup=markup)
 
-            case CommandMessages.BACK_TO_MENU_MESSAGE:
+            case CommandMessages.BACK_TO_MENU:
                 try:
                     del users_statements[user_id]
                 except KeyError:
                     pass
                 await start(message)
 
-            case CommandMessages.CURRENT_DAY_MESSAGE:
+            case CommandMessages.CURRENT_DAY:
                 date = datetime.datetime.now(pytz.timezone(REGION))
                 timetable = get_day_timetable(get_user_group_id(user_id), date)
                 await send_day_timetable(user_id, timetable)
 
-            case CommandMessages.NEXT_DAY_MESSAGE:
+            case CommandMessages.NEXT_DAY:
                 date = datetime.datetime.now(pytz.timezone(REGION)) + datetime.timedelta(days=1)
                 timetable = get_day_timetable(get_user_group_id(user_id), date)
                 await send_day_timetable(user_id, timetable)
 
-            case CommandMessages.DATE_TIMETABLE_MESSAGE:
+            case CommandMessages.DATE_TIMETABLE:
                 users_statements[user_id] = 'choosing_date'
                 markup = types.ReplyKeyboardMarkup(resize_keyboard=True, row_width=1)
-                button = types.KeyboardButton(CommandMessages.BACK_TO_MENU_MESSAGE)
+                button = types.KeyboardButton(CommandMessages.BACK_TO_MENU)
                 markup.add(button)
                 await bot.send_message(user_id, 'Напишите дату в формате ДД.ММ.ГГ', reply_markup=markup)
 
-            case CommandMessages.CURRENT_WEEK_MESSAGE:
+            case CommandMessages.CURRENT_WEEK:
                 current_date = datetime.datetime.now(pytz.timezone(REGION))
                 for delta in [5 - current_date.weekday() - i for i in range(5, -1, -1)]:
                     date = current_date + datetime.timedelta(days=delta)
                     timetable = get_day_timetable(get_user_group_id(user_id), date)
                     await send_day_timetable(user_id, timetable)
 
-            case CommandMessages.NEXT_WEEK_MESSAGE:
+            case CommandMessages.NEXT_WEEK:
                 current_date = datetime.datetime.now(pytz.timezone(REGION)) + datetime.timedelta(days=7)
                 for delta in [5 - current_date.weekday() - i for i in range(5, -1, -1)]:
                     date = current_date + datetime.timedelta(days=delta)
                     timetable = get_day_timetable(get_user_group_id(user_id), date)
                     await send_day_timetable(user_id, timetable)
 
-            case CommandMessages.NEXT_LESSON_MESSAGE:
+            case CommandMessages.NEXT_LESSON:
                 current_datetime = datetime.datetime.now(pytz.timezone(REGION))
 
             case _:
