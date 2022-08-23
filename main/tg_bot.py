@@ -38,9 +38,8 @@ WEEKDAY_NAMES = ['Понедельник', 'Вторник', 'Среда', 'Че
 REGION = 'Asia/Tomsk'
 
 
-
 def get_lesson_message(lessons, time, is_now=False):
-    head = f'️<b><u>{str(time[0])[5]} - {str(time[1])[5]}</u></b>'
+    head = f'️<b><u>{str(time[0])[:5]} - {str(time[1])[:5]}</u></b>'
     if is_now:
         head = '️➡' + head + '⬅'
     head += '\n'
@@ -183,7 +182,7 @@ if __name__ == '__main__':
                     await send_day_timetable(user_id, timetable)
 
             case CommandMessages.NEXT_LESSON_MESSAGE:
-                current_date = datetime.datetime.now(pytz.timezone(REGION)
+                current_datetime = datetime.datetime.now(pytz.timezone(REGION))
 
             case _:
                 if user_id not in users_statements:
