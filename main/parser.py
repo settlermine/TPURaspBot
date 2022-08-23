@@ -118,9 +118,3 @@ def get_day_timetable(group_id: int, date: datetime.date):
         return {'date': date_string, 'weekday': date.weekday(), 'timetable': week_timetable[date.weekday()]}
     if date.weekday() == 6:
         return {'date': date_string, 'weekday': date.weekday(), 'timetable': (None, None, None, None, None, None, None)}
-
-
-if __name__ == '__main__':
-    t = get_week_timetable(37008, 2021, 37)[0]
-    for i in t:
-        print(i)

@@ -26,41 +26,21 @@ class CommandMessages:
     DATE_TIMETABLE_MESSAGE = '📅Расписание по дате'
 
 
-LESSONS_TIME = ['8:30 - 10:05', '10:35 - 12:00', '12:40 - 14:15', '14:35 - 16:10', '16:30 - 18:05', '18:25 - 20:00', '20:20 - 21:55']
+LESSONS_TIME = [(datetime.time(8, 30), datetime.time(10, 5)),
+                (datetime.time(10, 25), datetime.time(12, 0)),
+                (datetime.time(12, 40), datetime.time(14, 15)),
+                (datetime.time(14, 35), datetime.time(16, 10)),
+                (datetime.time(16, 30), datetime.time(18, 5)),
+                (datetime.time(18, 25), datetime.time(20, 00)),
+                (datetime.time(20, 20), datetime.time(21, 55)),]
+#LESSONS_TIME = ['8:30 - 10:05', '10:35 - 12:00', '12:40 - 14:15', '14:35 - 16:10', '16:30 - 18:05', '18:25 - 20:00', '20:20 - 21:55']
 WEEKDAY_NAMES = ['Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота', 'Воскресенье']
 REGION = 'Asia/Tomsk'
-EXAMPLE_MSG = '''
-<b>-Понедельник 31.02.22-</b>
 
-<b><u>8:30 - 10:05</u></b>
-<b><i>Математика (ЛК)</i></b>
-Пчелинцев В. А.
-к. 10, ауд. 412
-
-➡️<b><u>10:35 - 12:00</u></b>⬅️
-️<b><i>Английский (ПР)</i></b>
-Коваленко Н. А.
-к. 7, ауд. 207
-<b><i>Физика (ЛБ)</i></b>
-Коротченко К. Б.
-к. 8, ауд. 26
-к. 10, ауд. 412
-
-<b><u>12:40 - 14:15</u></b>
-<b><i>Окно</i></b>
-
-<b><u>14:35 - 16:05</u></b>
-<b><i>Элект. дисциплины по ФКиС</i></b>
-
-<b><u>16:30 - 18:05</u></b>
-<b><i>Мат. Статистика (ЛБ)</i></b>
-Шинкеев М. Л.
-к. 10, ауд. 427А
-'''
 
 
 def get_lesson_message(lessons, time, is_now=False):
-    head = f'️<b><u>{time}</u></b>'
+    head = f'️<b><u>{str(time[0])[5]} - {str(time[1])[5]}</u></b>'
     if is_now:
         head = '️➡' + head + '⬅'
     head += '\n'
@@ -201,6 +181,9 @@ if __name__ == '__main__':
                     date = current_date + datetime.timedelta(days=delta)
                     timetable = get_day_timetable(get_user_group_id(user_id), date)
                     await send_day_timetable(user_id, timetable)
+
+            case CommandMessages.NEXT_LESSON_MESSAGE:
+                current_date = datetime.datetime.now(pytz.timezone(REGION)
 
             case _:
                 if user_id not in users_statements:
